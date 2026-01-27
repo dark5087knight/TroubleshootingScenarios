@@ -2,7 +2,7 @@
   "beginner": {
     "network": ["broke-dns"],
     "storage": ["lost-parttion"],
-    "services": ["example"]
+    "services": ["sshd-down"]
   },
   "intermediate": {
     "network": ["example"],
