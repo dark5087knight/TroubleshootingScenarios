@@ -5,6 +5,7 @@
     "services": ["sshd-down"]
   },
   "intermediate": {
+    "boot": ["Bios-boot-issue"],
     "network": ["example"],
     "storage": ["example"],
     "services": ["example"]
