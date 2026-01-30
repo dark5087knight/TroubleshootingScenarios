@@ -7,7 +7,7 @@
   "intermediate": {
     "boot": ["Bios-boot-issue"],
     "network": ["example"],
-    "storage": ["corrupted-mbr"],
+    "storage": ["corrupted-mbr", "mount-issue"],
     "services": ["example"]
   },
   "advanced": {
