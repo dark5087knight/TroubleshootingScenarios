@@ -45,23 +45,24 @@ info() {
 ### ROOT CHECK ###
 [[ $EUID -eq 0 ]] || fail "Run this script as root"
 
-for candidate in sda1 sdb sdc; do
-    DEVICE="/dev/$candidate"
+### FIND DISK (sdb preferred) ###
+if lsblk -dn -o NAME | grep -q "^sdb$"; then
+    DISK="/dev/sdb"
+elif lsblk -dn -o NAME | grep -q "^sdc$"; then
+    DISK="/dev/sdc"
+else
+    echo "No disk found for the scenario."
+    echo "Add a disk and verify it using lsblk."
+    exit 1
+fi
 
-    # skip if device does not exist
-    [[ -b "$DEVICE" ]] || continue
+info "Selected disk: $DISK"
 
-    # check if this is the OS disk
-    ROOT_DISK=$(lsblk -no PKNAME "$(findmnt -n -o SOURCE /)")
-    if [[ "/dev/$ROOT_DISK" == "$DEVICE" ]] || [[ "/dev/$ROOT_DISK" == "${DEVICE%[0-9]*}" ]]; then
-        echo "[INFO] $DEVICE is the OS disk, skipping..."
-        continue
-    fi
+### ENSURE NOT OS DISK ###
+ROOT_DISK=$(lsblk -no PKNAME "$(findmnt -n -o SOURCE /)")
+[[ "/dev/$ROOT_DISK" != "$DISK" ]] || fail "$DISK is the OS disk. Aborting."
 
-    # found a valid non-OS disk
-    DISK="$DEVICE"
-    break
-done
+info "$DISK confirmed as non-OS disk"
 
 ### WIPE SIGNATURES ###
 info "Wiping existing filesystem signatures"
